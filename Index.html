@@ -1,0 +1,705 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"/>
+  <!-- PWA Meta Tags -->
+  <meta name="theme-color" content="#4F7FFA"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
+  <meta name="apple-mobile-web-app-title" content="MetadePeso"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="application-name" content="MetadePeso"/>
+  <link rel="manifest" id="pwa-manifest"/>
+  <!-- Apple touch icon inline SVG workaround via data URI -->
+  <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%234F7FFA'/%3E%3Ctext x='256' y='320' font-size='280' text-anchor='middle' fill='white'%3E🌸%3C/text%3E%3C/svg%3E"/>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MetadePeso 🌸</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#F7F8FC;--surface:#FFFFFF;--border:#E8EBF4;
+  --text:#1A1D2E;--muted:#6B7280;--faint:#9CA3AF;
+  --blue:#4F7FFA;--blue-l:#EEF3FF;--blue-m:#C7D9FF;
+  --green:#22C55E;--green-l:#DCFCE7;
+  --red:#EF4444;--red-l:#FEE2E2;
+  --amber:#F59E0B;--amber-l:#FEF3C7;
+  --purple:#8B5CF6;--purple-l:#EDE9FE;
+  --pink:#EC4899;
+  --r:14px;--rs:10px;
+  --sh:0 2px 8px rgba(0,0,0,.07);
+  --shm:0 6px 24px rgba(0,0,0,.10);
+}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);font-size:15px;min-height:100vh}
+button{font-family:inherit}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:99px}
+.app{display:flex;min-height:100vh}
+.sidebar{width:224px;flex-shrink:0;background:var(--surface);border-right:1px solid var(--border);padding:24px 16px;display:flex;flex-direction:column;gap:4px;position:sticky;top:0;height:100vh;overflow-y:auto}
+.logo{font-size:19px;font-weight:800;color:var(--blue);margin-bottom:20px;display:flex;align-items:center;gap:8px}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--rs);cursor:pointer;font-size:13.5px;font-weight:500;color:var(--muted);background:none;border:none;width:100%;text-align:left;transition:.13s}
+.nav-btn:hover{background:var(--blue-l);color:var(--blue)}
+.nav-btn.active{background:var(--blue-l);color:var(--blue);font-weight:700}
+.main{flex:1;padding:28px 32px;min-width:0;overflow-y:auto}
+.pt{font-size:25px;font-weight:800;letter-spacing:-.3px;margin-bottom:4px}
+.ps{color:var(--muted);font-size:13px;margin-bottom:24px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:20px 22px;box-shadow:var(--sh)}
+.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
+.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}
+.g2{display:grid;grid-template-columns:repeat(2,1fr);gap:13px}
+.mt4{margin-top:4px}.mt8{margin-top:8px}.mt12{margin-top:12px}
+.mt16{margin-top:16px}.mt20{margin-top:20px}.mt24{margin-top:24px}
+.mlabel{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--faint);margin-bottom:5px}
+.mval{font-size:25px;font-weight:800;line-height:1}
+.msub{font-size:11px;color:var(--faint);margin-top:3px}
+.pbar{height:7px;background:var(--border);border-radius:99px;overflow:hidden;margin-top:10px}
+.pbar-fill{height:100%;background:linear-gradient(90deg,var(--blue),var(--green));border-radius:99px;transition:width .6s}
+.av-card{text-align:center;padding:26px 20px}
+.av-emoji{font-size:68px;display:block;animation:fl 3s ease-in-out infinite}
+@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.av-status{font-size:16px;font-weight:700;margin-top:12px}
+.av-msg{font-size:12.5px;color:var(--muted);margin-top:5px;line-height:1.5}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 18px;border-radius:var(--rs);font-size:13.5px;font-weight:600;cursor:pointer;border:none;transition:.13s;font-family:inherit}
+.btn-p{background:var(--blue);color:#fff}
+.btn-p:hover{background:#3a6cf0;transform:translateY(-1px);box-shadow:0 4px 12px rgba(79,127,250,.35)}
+.btn-o{background:var(--surface);color:var(--text);border:1.5px solid var(--border)}
+.btn-o:hover{border-color:var(--blue);color:var(--blue)}
+.btn-sm{padding:6px 13px;font-size:12.5px}
+.btn-danger{background:#FEE2E2;color:#B91C1C;border:none}
+.igroup{display:flex;flex-direction:column;gap:5px}
+.ilabel{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+.ifield{border:1.5px solid var(--border);border-radius:var(--rs);padding:10px 13px;font-size:14px;font-family:inherit;background:var(--bg);color:var(--text);outline:none;transition:.13s;width:100%}
+.ifield:focus{border-color:var(--blue);background:var(--surface);box-shadow:0 0 0 3px rgba(79,127,250,.12)}
+.dtable{width:100%;border-collapse:collapse}
+.dtable th{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--faint);padding:9px 13px;text-align:left;border-bottom:1px solid var(--border)}
+.dtable td{padding:10px 13px;border-bottom:1px solid var(--border);font-size:13px}
+.dtable tr:last-child td{border-bottom:none}
+.dtable tbody tr:hover td{background:var(--bg)}
+.quote-card{background:linear-gradient(135deg,#4F7FFA,#8B5CF6);color:#fff;border-radius:var(--r);padding:22px 26px}
+.quote-text{font-size:16px;line-height:1.55;font-weight:500;margin-bottom:6px}
+.quote-attr{font-size:11px;opacity:.7;text-align:right}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:99px;font-size:12px;font-weight:600}
+.b-blue{background:var(--blue-l);color:#1D4ED8}
+.sbox{display:flex;align-items:flex-start;gap:11px;padding:12px 14px;border-radius:var(--rs);font-size:13px;font-weight:500;line-height:1.4}
+.streak{display:inline-flex;align-items:center;gap:8px;background:linear-gradient(90deg,#FEF3C7,#FDE68A);border-radius:99px;padding:7px 16px;font-size:13px;font-weight:700;color:#92400E;margin-bottom:18px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.cal-hd{font-size:10px;font-weight:700;text-align:center;color:var(--faint);padding:4px 0}
+.cal-day{aspect-ratio:1;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;min-width:0}
+.cal-in{background:var(--green-l);color:#15803D}
+.cal-out{background:var(--red-l);color:#B91C1C}
+.cal-best{background:linear-gradient(135deg,#F59E0B,#EC4899);color:#fff}
+.cal-future{background:var(--bg);color:var(--faint)}
+.cal-empty{background:transparent}
+.cal-today{outline:2px solid var(--blue);outline-offset:1px}
+.ach{display:flex;align-items:center;gap:13px;padding:13px 15px;border-radius:var(--rs);border:1px solid var(--border)}
+.ach.on{border-color:var(--blue-m);background:var(--blue-l)}
+.ach.off{opacity:.4}
+.ach-icon{font-size:28px;flex-shrink:0}
+.ach-title{font-size:13px;font-weight:700}
+.ach-desc{font-size:12px;color:var(--muted);margin-top:2px}
+.chart-wrap{position:relative;width:100%;overflow:hidden}
+canvas{display:block;width:100%!important}
+.proj-val{font-size:30px;font-weight:800;color:var(--blue);line-height:1}
+.proj-lbl{font-size:12px;color:var(--muted);margin-top:4px}
+.toast{position:fixed;bottom:22px;right:22px;background:var(--text);color:#fff;padding:10px 18px;border-radius:var(--rs);font-size:13px;font-weight:500;z-index:999;box-shadow:var(--shm);animation:su .3s ease;pointer-events:none}
+@keyframes su{from{transform:translateY(14px);opacity:0}to{transform:translateY(0);opacity:1}}
+.flex{display:flex}.fac{align-items:center}.fjb{justify-content:space-between}.fwrap{flex-wrap:wrap}
+.gap8{gap:8px}.gap10{gap:10px}.gap12{gap:12px}
+.mob-bar{display:none;background:var(--surface);border-bottom:1px solid var(--border);padding:12px 15px;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.ham{display:flex;flex-direction:column;gap:4px;cursor:pointer;padding:4px}
+.ham span{display:block;width:20px;height:2px;background:var(--text);border-radius:99px}
+.drawer-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:100;display:none}
+.drawer-bg.open{display:block}
+.drawer{position:absolute;left:0;top:0;bottom:0;width:224px;background:var(--surface);padding:24px 16px;display:flex;flex-direction:column;gap:4px}
+.fade{animation:fd .22s ease}
+@keyframes fd{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.sp-label{font-size:11px;color:var(--faint);text-align:center;line-height:1.6}
+@media(max-width:860px){.sidebar{display:none}.mob-bar{display:flex}.main{padding:18px 14px}.g4{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:480px){.g4,.g3,.g2{grid-template-columns:1fr}}
+@media print{.sidebar,.mob-bar,.btn,.drawer-bg{display:none!important}.main{padding:0}}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar" id="sidebar">
+    <div class="logo">🌸 MetadePeso</div>
+    <div id="nav-d"></div>
+    <div style="margin-top:auto;padding-top:18px">
+      <div class="sp-label" id="sb-info">Carregando…</div>
+      <div class="pbar mt8"><div class="pbar-fill" id="sb-pbar" style="width:0%"></div></div>
+    </div>
+  </aside>
+  <div style="flex:1;display:flex;flex-direction:column;min-width:0">
+    <div class="mob-bar">
+      <div class="logo" style="margin-bottom:0">🌸 MetadePeso</div>
+      <div class="ham" onclick="openDrawer()"><span></span><span></span><span></span></div>
+    </div>
+    <main class="main"><div id="page"></div></main>
+  </div>
+</div>
+<div class="drawer-bg" id="drw-bg" onclick="closeDrawer()">
+  <div class="drawer" onclick="event.stopPropagation()">
+    <div class="logo">🌸 MetadePeso</div>
+    <div id="nav-m"></div>
+  </div>
+</div>
+<div class="toast" id="toast" style="display:none"></div>
+
+<script>
+// ── PHRASES ──
+var PHRASES=["Disciplina pesa gramas. Resultado pesa quilos.","Voce nao precisa ser perfeita. Precisa ser consistente.","Cada pesagem e um voto na pessoa que voce quer se tornar.","O progresso e silencioso. Continue.","Seu corpo e capaz. Sua mente decide.","Um dia de cada vez. Uma escolha de cada vez.","Nao desista de quem voce esta se tornando.","A mudanca comeca quando o desejo supera o desconforto.","Voce ja esta na metade do caminho. Continue.","Pequenas vitorias constroem grandes transformacoes.","A versao mais forte de voce esta te esperando.","Hoje e um bom dia para ser um bom dia.","Confie no processo, mesmo quando nao ve os resultados.","Seu esforco de hoje e o seu resultado de amanha.","Cada passo conta. Especialmente os que voce quer desistir.","Voce e mais forte do que pensa.","Nao compare seu capitulo 1 com o capitulo 20 de outra pessoa.","Seja gentil consigo mesma. Voce esta fazendo o melhor que pode.","O segredo e comecar. O resto e consistencia.","Resultados requerem tempo. Confie no processo.","Voce nao precisa ser rapida. So precisa nao parar.","Cada refeicao saudavel e uma vitoria.","Seu futuro eu ja esta orgulhoso.","Foco, fe e forca. Voce tem os tres.","Quando quiser desistir, lembre por que comecou.","A disciplina de hoje e a liberdade de amanha.","Seu corpo ouve tudo que sua mente diz.","Transformacao acontece diariamente, nao da noite para o dia.","Voce esta mais perto do que ontem.","A consistencia bate a perfeicao todos os dias.","Um dia mau nao desfaz uma semana boa.","Voce merece sentir-se bem na propria pele.","Cuide-se como cuidaria de alguem que voce ama.","O maior adversario e a versao que desiste.","Saude e um investimento, nao uma despesa.","Voce tem 100% de chances de conseguir se nao desistir.","Leve seu tempo. Mas nao pare.","A beleza esta no esforco, nao apenas no resultado.","Seja paciente. Grandes coisas levam tempo.","Ontem voce plantou. Hoje voce rega. Amanha voce colhe.","Acredite no processo mesmo sem ver os resultados ainda.","Voce ja veio longe. Nao olhe para tras agora.","O sucesso e a soma de pequenos esforcos repetidos dia apos dia.","Sua motivacao pode variar. Sua decisao nao.","Um passo de cada vez constroi uma estrada inteira.","Voce merece uma vida que te enche de energia.","Equilibrio e diferente de perfeicao.","A saude de hoje e o presente que voce da ao futuro.","Foco no que voce pode controlar.","Consistencia e rara. Por isso o resultado e especial.","Cada grama perdida e uma prova do seu compromisso.","Sua versao mais saudavel esta do outro lado do esforco.","Nao existe atalho para um destino que vale a pena.","Trate seu corpo como o lar que voce quer habitar por muito tempo.","Hoje voce fez uma escolha. Isso ja e vitoria.","Comece onde voce esta. Use o que voce tem. Faca o que voce pode.","Cada dia e uma nova chance de cuidar de voce.","Voce e mais do que um numero. Mas voce pode mudar esse numero.","Movimento e medicina. Disciplina e cura.","Nao espere pelo dia perfeito. Crie-o.","Seu esforco nunca e desperdicado.","Acorde, decida, aja. Repita.","Quanto mais voce cuida de si, mais voce tem para dar.","A resiliencia e construida nos dias dificeis.","O esforco de hoje alimenta os resultados de amanha.","Sua jornada, seu ritmo, sua vitoria.","Pequenas mudancas criam grandes resultados com o tempo.","Voce nao precisa de motivacao. Voce precisa de habito.","A versao futura de voce agradece cada boa escolha de hoje.","Seu compromisso com voce mesma e o mais importante.","Pense em como vai se sentir quando chegar la.","Isso tambem vai passar. E voce vai estar mais forte.","Nao perca de vista o porque.","Cada dia de registro e um dia de autocuidado.","Quando parece dificil, lembre que voce ja superou coisas dificeis.","A sua mentalidade muda tudo.","Ganhe confianca uma boa decisao de cada vez.","Saude e a coroa que so quem a perdeu percebe que usava.","Voce tem forca suficiente para este dia.","Nao desista. O comeco e sempre o mais dificil.","Viver bem e o melhor presente que voce pode dar a si mesma.","Seus esforcos importam, mesmo quando ninguem ve.","Voce esta escrevendo sua historia. Faca-a bonita.","Nao existe esforco perdido. So resultados que ainda nao apareceram.","Acredite: voce e capaz de mais do que imagina.","Persistencia e a chave que abre todas as portas.","A vida que voce quer esta do lado de ca do desistir.","Cuide da saude como quem cuida do que mais ama.","Voce chegou ate aqui. O resto e consequencia.","A disciplina nao e castigo. E amor proprio em acao.","Seja forte. Nao porque e facil. Mas porque voce pode.","Cada grama importa. Cada escolha importa. Voce importa.","Floresa no seu proprio tempo.","O progresso, nao a perfeicao, e a meta.","Voce e suficiente. E esta ficando mais forte.","Cada conquista comeca com a decisao de tentar.","Seja a heroina da sua propria historia.","A jornada e dificil, mas voce e mais dificil ainda.","Seu melhor e suficiente. Sempre."];
+
+function dailyPhrase(){var d=new Date();return PHRASES[(d.getFullYear()*366+d.getMonth()*31+d.getDate())%PHRASES.length];}
+
+// ── HELPERS ──
+function todayKey(){var d=new Date();return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());}
+function p2(n){return String(n).padStart(2,'0');}
+function parseD(s){var p=s.split('-').map(Number);return new Date(p[0],p[1]-1,p[2]);}
+function fmtKey(d){return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate());}
+function fmtS(k){var p=k.split('-');return p[2]+'/'+p[1];}
+function fmtF(k){var p=k.split('-');return p[2]+'/'+p[1]+'/'+p[0];}
+function daysBetween(a,b){return Math.round((b-a)/864e5);}
+function ge(id){return document.getElementById(id);}
+function sh(id,html){var el=ge(id);if(el)el.innerHTML=html;}
+
+// ── STORAGE ──
+var DEFS={startDate:'2025-06-16',endDate:'2026-07-31',initialWeight:72.8,goalWeight:67.0};
+function load(){
+  try{
+    return{entries:JSON.parse(localStorage.getItem('pm_e')||'{}'),
+           startDate:localStorage.getItem('pm_s')||DEFS.startDate,
+           endDate:localStorage.getItem('pm_end')||DEFS.endDate,
+           initialWeight:parseFloat(localStorage.getItem('pm_i')||DEFS.initialWeight),
+           goalWeight:parseFloat(localStorage.getItem('pm_g')||DEFS.goalWeight)};
+  }catch(e){return{entries:{},...DEFS};}
+}
+function saveE(e){try{localStorage.setItem('pm_e',JSON.stringify(e));}catch(x){}}
+function saveCfg(c){
+  try{localStorage.setItem('pm_s',c.startDate);localStorage.setItem('pm_end',c.endDate);
+      localStorage.setItem('pm_i',c.initialWeight);localStorage.setItem('pm_g',c.goalWeight);}catch(x){}
+}
+
+// ── PLAN ──
+function buildPlan(cfg){
+  var s=parseD(cfg.startDate),en=parseD(cfg.endDate);
+  var td=daysBetween(s,en),tl=cfg.initialWeight-cfg.goalWeight;
+  var kpd=tl/td,gpd=kpd*1000,plan=[];
+  for(var i=0;i<=td;i++){
+    var dt=new Date(s);dt.setDate(s.getDate()+i);
+    var k=fmtKey(dt);
+    var exp=+Math.max(cfg.goalWeight,cfg.initialWeight-kpd*i).toFixed(2);
+    plan.push({key:k,date:dt,expected:exp,real:cfg.entries[k]!=null?cfg.entries[k]:null,idx:i});
+  }
+  return{plan:plan,totalDays:td,totalLoss:tl,kpd:kpd,gpd:gpd};
+}
+
+// ── STATS ──
+function stats(cfg,plan,totalLoss){
+  var tk=todayKey(),today=parseD(tk),end=parseD(cfg.endDate);
+  var daysLeft=Math.max(0,daysBetween(today,end));
+  var ekeys=Object.keys(cfg.entries).filter(function(k){return cfg.entries[k]!=null;});
+  var latK=ekeys.sort().slice(-1)[0]||null;
+  var latW=latK?cfg.entries[latK]:null;
+  var lost=latW!=null?+(cfg.initialWeight-latW).toFixed(2):0;
+  var pct=totalLoss?Math.min(100,Math.max(0,+(lost/totalLoss*100).toFixed(1))):0;
+  // streak
+  var streak=0;
+  for(var i=0;i<500;i++){var dd=new Date(today);dd.setDate(today.getDate()-i);if(cfg.entries[fmtKey(dd)]!=null)streak++;else break;}
+  // today plan
+  var todayPlan=plan.find(function(d){return d.key===tk;})||null;
+  var curW=cfg.entries[tk]!=null?cfg.entries[tk]:null;
+  var cmpW=curW!=null?curW:latW;
+  // perf
+  var perf=null;
+  if(todayPlan&&cmpW!=null){
+    var diff=cmpW-todayPlan.expected;
+    if(diff<-0.05)perf={emoji:'✅',msg:'Voce esta adiantada em relacao ao plano!',bg:'#DCFCE7',color:'#15803D'};
+    else if(Math.abs(diff)<=0.05)perf={emoji:'🎯',msg:'Voce esta no caminho certo.',bg:'#EEF3FF',color:'#1D4ED8'};
+    else{var g=Math.round(diff*1000);perf={emoji:'⚠️',msg:'Voce precisa recuperar '+g+'g para voltar ao plano.',bg:'#FEF3C7',color:'#B45309'};}
+  }
+  // avatar
+  var av;
+  if(!todayPlan||cmpW==null)av={e:'😊',label:'Bem-vinda!',msg:'Registre seu peso para comecar.',color:'#4F7FFA'};
+  else{var dv=cmpW-todayPlan.expected;
+    if(dv<=-0.5)av={e:'😄',label:'Excelente!',msg:'Voce esta superando a meta!',color:'#22C55E'};
+    else if(dv<=0.1)av={e:'🙂',label:'Otimo!',msg:'No caminho certo. Continue!',color:'#4F7FFA'};
+    else if(dv<=0.5)av={e:'😐',label:'Atencao',msg:'Pequenos ajustes vao te trazer de volta!',color:'#F59E0B'};
+    else av={e:'😵',label:'Fora da Meta',msg:'Nao desista! Cada dia e uma nova chance.',color:'#EF4444'};
+  }
+  // projection
+  var wr=plan.filter(function(d){return d.real!=null;}).sort(function(a,b){return a.idx-b.idx;});
+  var proj=null;
+  if(wr.length>=2){var f=wr[0],l=wr[wr.length-1];var rate=(f.real-l.real)/(l.idx-f.idx||1);proj=+(l.real-rate*((plan.length-1)-l.idx)).toFixed(1);}
+  // best week
+  var bw=null,bl=0;
+  for(var i=6;i<plan.length;i++){var sl=plan.slice(i-6,i+1).filter(function(d){return d.real!=null;});if(sl.length>=2){var ls=sl[0].real-sl[sl.length-1].real;if(ls>bl){bl=ls;bw={start:sl[0].key,end:sl[sl.length-1].key,loss:+ls.toFixed(2)};}}}
+  // record
+  var allW=ekeys.map(function(k){return cfg.entries[k];});
+  var bestW=allW.length?Math.min.apply(null,allW):null;
+  var bestWK=bestW!=null?ekeys.find(function(k){return cfg.entries[k]===bestW;}):null;
+  // achievements
+  var achs=[
+    {e:'⭐',t:'Primeiro Registro',d:'Registrou o primeiro peso',ok:ekeys.length>=1},
+    {e:'🔥',t:'Chama Viva',d:'3 dias consecutivos',ok:streak>=3},
+    {e:'🏆',t:'Primeira Semana',d:'7 registros realizados',ok:ekeys.length>=7},
+    {e:'💪',t:'Semana de Fogo',d:'7 dias consecutivos',ok:streak>=7},
+    {e:'🚀',t:'1 kg Perdido!',d:'Perdeu mais de 1 kg',ok:lost>=1},
+    {e:'🌟',t:'3 kg Perdidos!',d:'Perdeu mais de 3 kg',ok:lost>=3},
+    {e:'📅',t:'Um Mes Completo',d:'30 registros realizados',ok:ekeys.length>=30},
+    {e:'🔮',t:'Mes Perfeito',d:'30 dias consecutivos',ok:streak>=30},
+    {e:'💎',t:'Meta Alcancada!',d:'Chegou ao peso desejado',ok:bestW!=null&&bestW<=cfg.goalWeight},
+  ];
+  return{daysLeft:daysLeft,latK:latK,latW:latW,lost:lost,pct:pct,streak:streak,todayPlan:todayPlan,curW:curW,cmpW:cmpW,perf:perf,av:av,proj:proj,bw:bw,bestW:bestW,bestWK:bestWK,achs:achs};
+}
+
+// ── CANVAS CHARTS ──
+function drawChart(canvasId,plan,type){
+  var canvas=ge(canvasId);if(!canvas)return;
+  var ctx=canvas.getContext('2d');
+  var dpr=window.devicePixelRatio||1;
+  var W=canvas.offsetWidth||400,H=canvas.offsetHeight||260;
+  canvas.width=W*dpr;canvas.height=H*dpr;ctx.scale(dpr,dpr);
+  ctx.clearRect(0,0,W,H);
+  var tk=todayKey();
+  var todayIdx=plan.findIndex(function(d){return d.key===tk;});
+  var firstRI=plan.findIndex(function(d){return d.real!=null;});
+  if(firstRI<0)firstRI=todayIdx;
+  var si=Math.max(0,Math.min(firstRI,todayIdx)-3);
+  var ei=Math.min(plan.length-1,todayIdx+10);
+  var vis=plan.slice(si,ei+1);
+  if(!vis.length){ctx.fillStyle='#9CA3AF';ctx.font='13px sans-serif';ctx.textAlign='center';ctx.fillText('Registre pesos para ver o grafico',W/2,H/2);return;}
+  var PAD={t:12,r:14,b:32,l:46};
+  var gW=W-PAD.l-PAD.r,gH=H-PAD.t-PAD.b;
+  var allV=vis.flatMap(function(d){return[d.expected,d.real].filter(function(v){return v!=null;});});
+  var minV=Math.min.apply(null,allV)-0.4,maxV=Math.max.apply(null,allV)+0.4,rV=maxV-minV||1;
+  var xOf=function(i){return PAD.l+(i/(vis.length-1||1))*gW;};
+  var yOf=function(v){return PAD.t+(1-(v-minV)/rV)*gH;};
+  // grid
+  ctx.strokeStyle='#E8EBF4';ctx.lineWidth=1;
+  for(var gi=0;gi<=4;gi++){var gv=minV+(rV/4)*gi;var gy=yOf(gv);ctx.beginPath();ctx.moveTo(PAD.l,gy);ctx.lineTo(W-PAD.r,gy);ctx.stroke();ctx.fillStyle='#9CA3AF';ctx.font='9px sans-serif';ctx.textAlign='right';ctx.fillText(gv.toFixed(1),PAD.l-4,gy+3);}
+  // x labels
+  var step=Math.max(1,Math.floor(vis.length/7));
+  ctx.fillStyle='#9CA3AF';ctx.font='9px sans-serif';ctx.textAlign='center';
+  vis.forEach(function(d,i){if(i%step===0||i===vis.length-1)ctx.fillText(fmtS(d.key),xOf(i),H-PAD.b+12);});
+  // MA7
+  var ma7=vis.map(function(d,i){var sl=vis.slice(Math.max(0,i-6),i+1).filter(function(x){return x.real!=null;});return sl.length?sl.reduce(function(s,x){return s+x.real;},0)/sl.length:null;});
+  if(type==='ma'){
+    // MA7 line purple
+    ctx.strokeStyle='#8B5CF6';ctx.lineWidth=2.5;ctx.beginPath();var ms=false;
+    ma7.forEach(function(v,i){if(v==null)return;var x=xOf(i),y=yOf(v);if(!ms){ctx.moveTo(x,y);ms=true;}else ctx.lineTo(x,y);});ctx.stroke();
+    // expected dashed
+    ctx.save();ctx.setLineDash([5,4]);ctx.strokeStyle='#4F7FFA';ctx.lineWidth=1.5;ctx.beginPath();
+    vis.forEach(function(d,i){var x=xOf(i),y=yOf(d.expected);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});ctx.stroke();ctx.restore();
+  } else {
+    // expected area
+    ctx.save();ctx.setLineDash([5,4]);ctx.strokeStyle='#4F7FFA';ctx.lineWidth=1.8;ctx.beginPath();
+    vis.forEach(function(d,i){var x=xOf(i),y=yOf(d.expected);i===0?ctx.moveTo(x,y):ctx.lineTo(x,y);});ctx.stroke();ctx.restore();
+    // real segments
+    var segs=[],seg=[];
+    vis.forEach(function(d,i){if(d.real!=null)seg.push({x:xOf(i),y:yOf(d.real),v:d.real,exp:d.expected});else if(seg.length){segs.push(seg);seg=[];}});
+    if(seg.length)segs.push(seg);
+    segs.forEach(function(sg){
+      ctx.save();ctx.beginPath();ctx.moveTo(sg[0].x,yOf(minV));sg.forEach(function(p){ctx.lineTo(p.x,p.y);});ctx.lineTo(sg[sg.length-1].x,yOf(minV));ctx.closePath();ctx.fillStyle='rgba(34,197,94,0.08)';ctx.fill();ctx.restore();
+      ctx.strokeStyle='#22C55E';ctx.lineWidth=2.5;ctx.beginPath();sg.forEach(function(p,i){i===0?ctx.moveTo(p.x,p.y):ctx.lineTo(p.x,p.y);});ctx.stroke();
+      sg.forEach(function(p){ctx.beginPath();ctx.arc(p.x,p.y,3.5,0,Math.PI*2);ctx.fillStyle=p.v<=p.exp+0.05?'#22C55E':'#EF4444';ctx.fill();});
+    });
+    // ma7 dashed pink
+    ctx.save();ctx.setLineDash([4,3]);ctx.strokeStyle='#EC4899';ctx.lineWidth=1.8;ctx.beginPath();var ms2=false;
+    ma7.forEach(function(v,i){if(v==null)return;var x=xOf(i),y=yOf(v);if(!ms2){ctx.moveTo(x,y);ms2=true;}else ctx.lineTo(x,y);});ctx.stroke();ctx.restore();
+  }
+  // legend
+  function leg(x,y,color,lbl,dash){ctx.save();if(dash)ctx.setLineDash([4,3]);ctx.strokeStyle=color;ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(x,y-3);ctx.lineTo(x+18,y-3);ctx.stroke();ctx.restore();ctx.fillStyle='#6B7280';ctx.font='10px sans-serif';ctx.textAlign='left';ctx.fillText(lbl,x+22,y);}
+  var ly=H-4;
+  if(type==='ma'){leg(PAD.l,ly,'#8B5CF6','Media 7 dias');leg(PAD.l+130,ly,'#4F7FFA','Meta',true);}
+  else{leg(PAD.l,ly,'#4F7FFA','Meta',true);leg(PAD.l+76,ly,'#22C55E','Real');leg(PAD.l+146,ly,'#EC4899','Media 7d',true);}
+}
+
+// ── STATE ──
+var cfg=load();
+var curPage='dashboard';
+var inDate=todayKey();
+var toastTimer=null;
+var calView=null;
+
+// ── TOAST ──
+function showToast(msg){var t=ge('toast');if(!t)return;t.textContent=msg;t.style.display='block';clearTimeout(toastTimer);toastTimer=setTimeout(function(){t.style.display='none';},3000);}
+
+// ── DRAWER ──
+function openDrawer(){ge('drw-bg').classList.add('open');}
+function closeDrawer(){ge('drw-bg').classList.remove('open');}
+
+// ── NAV ──
+var NAVS=[
+  {id:'dashboard',ic:'📊',l:'Dashboard'},
+  {id:'registro',ic:'⚖️',l:'Registrar Peso'},
+  {id:'graficos',ic:'📈',l:'Graficos'},
+  {id:'historico',ic:'📋',l:'Historico'},
+  {id:'calendario',ic:'📅',l:'Calendario'},
+  {id:'conquistas',ic:'🏆',l:'Conquistas'},
+  {id:'configuracoes',ic:'⚙️',l:'Configuracoes'},
+];
+function renderNav(id){sh(id,NAVS.map(function(n){return '<button class="nav-btn'+(curPage===n.id?' active':'')+'" onclick="goto(\''+n.id+'\')">'+n.ic+' '+n.l+'</button>';}).join(''));}
+
+function goto(p){curPage=p;closeDrawer();render();}
+
+// ── RENDER ──
+function render(){
+  var R=buildPlan(cfg);
+  var plan=R.plan,tl=R.totalLoss,gpd=R.gpd;
+  var S=stats(cfg,plan,tl);
+  renderNav('nav-d');renderNav('nav-m');
+  sh('sb-info','Meta: '+cfg.goalWeight+' kg | Prazo: '+fmtS(cfg.endDate)+'<br><span style="color:var(--green);font-weight:700">'+S.pct+'% concluido</span>');
+  var pb=ge('sb-pbar');if(pb)pb.style.width=S.pct+'%';
+  var pMap={dashboard:pgDash,registro:pgReg,graficos:pgGraf,historico:pgHist,calendario:pgCal,conquistas:pgConq,configuracoes:pgCfg};
+  var el=ge('page');
+  if(el){el.innerHTML=(pMap[curPage]||pgDash)(cfg,plan,S,tl,gpd,R.totalDays);el.classList.remove('fade');void el.offsetWidth;el.classList.add('fade');}
+  setTimeout(function(){
+    attach(cfg,plan,S,tl,gpd);
+    if(curPage==='graficos'){drawChart('chart-m',plan,'main');drawChart('chart-ma',plan,'ma');}
+  },0);
+}
+
+// ── METRIC CARD ──
+function mc(lbl,val,sub,color,prog){return '<div class="card"><div class="mlabel">'+lbl+'</div><div class="mval" style="color:'+color+'">'+val+'</div><div class="msub">'+sub+'</div>'+(prog!=null?'<div class="pbar"><div class="pbar-fill" style="width:'+prog+'%"></div></div>':'')+'</div>';}
+
+// ── PAGES ──
+function pgDash(cfg,plan,S,tl,gpd){
+  var ll=Math.max(0,(S.latW||cfg.initialWeight)-cfg.goalWeight).toFixed(1);
+  var unl=S.achs.filter(function(a){return a.ok;});
+  return '<div class="quote-card">'+
+    '<div class="quote-text">"'+dailyPhrase()+'"</div>'+
+    '<div class="quote-attr">💫 Frase do dia</div></div>'+
+    (S.streak>0?'<div class="mt16"><div class="streak">🔥 Sequencia atual: '+S.streak+' '+(S.streak===1?'dia':'dias')+'!</div></div>':'')+
+    '<div class="mt16"></div>'+
+    '<div class="g2">'+
+    '<div class="card av-card"><span class="av-emoji">'+S.av.e+'</span><div class="av-status" style="color:'+S.av.color+'">'+S.av.label+'</div><div class="av-msg">'+S.av.msg+'</div></div>'+
+    '<div class="card" style="padding:18px 20px">'+
+    '<div class="flex fjb fac" style="margin-bottom:9px"><span style="font-size:13px;color:var(--muted)">Esperado hoje</span><span style="font-size:21px;font-weight:800">'+(S.todayPlan?S.todayPlan.expected+' kg':'—')+'</span></div>'+
+    '<div class="flex fjb fac" style="margin-bottom:12px"><span style="font-size:13px;color:var(--muted)">Registrado</span><span style="font-size:21px;font-weight:800;color:'+(S.cmpW?'var(--text)':'var(--faint)')+'">'+(S.curW?S.curW+' kg':S.latW?S.latW+' kg *':'—')+'</span></div>'+
+    '<hr style="border:none;border-top:1px solid var(--border);margin-bottom:12px">'+
+    (S.perf?'<div class="sbox" style="background:'+S.perf.bg+';color:'+S.perf.color+'"><span style="font-size:20px">'+S.perf.emoji+'</span><span>'+S.perf.msg+'</span></div>':'<div class="sbox" style="background:var(--bg);color:var(--muted)"><span style="font-size:20px">📝</span><span>Registre seu peso para ver o status.</span></div>')+
+    (S.latK&&S.latK!==todayKey()?'<div style="font-size:11px;color:var(--faint);margin-top:6px">* Ultimo registro: '+fmtS(S.latK)+'</div>':'')+
+    '</div></div>'+
+    '<div class="mt14"></div><div class="g4">'+
+    mc('Peso Atual',(S.latW||cfg.initialWeight)+' kg',S.latK?'Registrado em '+fmtS(S.latK):'Nenhum registro','#4F7FFA')+
+    mc('Peso Inicial',cfg.initialWeight+' kg','Inicio em '+fmtS(cfg.startDate),'#8B5CF6')+
+    mc('Peso Meta',cfg.goalWeight+' kg','Prazo: '+fmtS(cfg.endDate),'#EC4899')+
+    mc('Falta para Meta',ll+' kg','Para atingir o objetivo','#22C55E')+
+    '</div><div class="mt12"></div><div class="g3">'+
+    mc('Dias Restantes',S.daysLeft,'Ate '+fmtS(cfg.endDate),'#F59E0B')+
+    mc('Progresso',S.pct+'%',S.lost.toFixed(2)+' kg de '+tl.toFixed(2)+' kg','#22C55E',S.pct)+
+    mc('Ritmo Necessario',Math.round(gpd)+'g/dia','Perda diaria estimada','#4F7FFA')+
+    '</div>'+
+    (S.proj!=null?'<div class="mt16"></div><div class="g2">'+
+    '<div class="card"><div class="mlabel">📍 Projecao no Prazo Final</div><div class="proj-val">'+S.proj+' kg</div><div class="proj-lbl">'+(S.proj<=cfg.goalWeight?'🎉 Voce vai bater a meta!':'Se continuar neste ritmo, chegara a '+S.proj+' kg.')+'</div></div>'+
+    (S.bw?'<div class="card"><div class="mlabel">🏅 Melhor Semana</div><div class="proj-val" style="color:#22C55E">−'+S.bw.loss+' kg</div><div class="proj-lbl">'+fmtS(S.bw.start)+' → '+fmtS(S.bw.end)+'</div></div>':'')+
+    '</div>':'')+
+    '<div class="mt20"></div>'+
+    '<div class="flex fjb fac gap10" style="margin-bottom:11px"><div style="font-size:14px;font-weight:700">🏆 Conquistas Desbloqueadas</div><button class="btn btn-o btn-sm" onclick="goto(\'conquistas\')">Ver todas</button></div>'+
+    '<div class="flex fwrap gap8">'+(unl.length?unl.slice(0,6).map(function(a){return'<span class="badge b-blue">'+a.e+' '+a.t+'</span>';}).join(''):'<span style="color:var(--faint);font-size:13px">Registre seu peso para desbloquear conquistas!</span>')+'</div>';
+}
+
+function pgReg(cfg,plan,S){
+  var te=plan.find(function(d){return d.key===todayKey();});
+  return '<div class="card" style="max-width:440px">'+
+    '<div style="font-size:16px;font-weight:700;margin-bottom:16px">⚖️ Registrar Peso</div>'+
+    '<div class="igroup" style="margin-bottom:12px"><label class="ilabel">Data</label><input type="date" class="ifield" id="reg-date" value="'+inDate+'" min="'+cfg.startDate+'" max="'+cfg.endDate+'"></div>'+
+    '<div class="igroup" style="margin-bottom:12px"><label class="ilabel">Peso (kg)</label><input type="number" class="ifield" id="reg-w" placeholder="Ex: 72.4" step="0.1" min="30" max="200"></div>'+
+    (te?'<div class="sbox" style="background:var(--blue-l);color:#1D4ED8;margin-bottom:12px"><span style="font-size:19px">📍</span><span>Esperado para hoje: <strong>'+te.expected+' kg</strong></span></div>':'')+
+    '<button class="btn btn-p" id="btn-reg" style="width:100%">Salvar Registro</button></div>'+
+    (S.todayPlan?'<div class="card mt14" style="max-width:440px">'+
+    '<div style="font-size:13.5px;font-weight:700;margin-bottom:10px">📅 Hoje — '+fmtF(todayKey())+'</div>'+
+    '<div class="flex fjb fac" style="margin-bottom:7px"><span style="color:var(--muted);font-size:13px">Esperado</span><strong>'+S.todayPlan.expected+' kg</strong></div>'+
+    '<div class="flex fjb fac"><span style="color:var(--muted);font-size:13px">Registrado</span><strong style="color:'+(S.curW?'var(--text)':'var(--faint)')+'">'+(S.curW?S.curW+' kg':'—')+'</strong></div></div>':'');
+}
+
+function pgGraf(){
+  return '<div class="card">'+
+    '<div style="font-size:14px;font-weight:700;margin-bottom:3px">Evolucao do Peso</div>'+
+    '<div style="font-size:12px;color:var(--muted);margin-bottom:14px">Meta planejada vs. peso real</div>'+
+    '<div class="chart-wrap" style="height:260px"><canvas id="chart-m" style="height:260px"></canvas></div></div>'+
+    '<div class="card mt16">'+
+    '<div style="font-size:14px;font-weight:700;margin-bottom:3px">Media Movel de 7 Dias</div>'+
+    '<div style="font-size:12px;color:var(--muted);margin-bottom:14px">Suaviza oscilacoes e mostra a tendencia real</div>'+
+    '<div class="chart-wrap" style="height:230px"><canvas id="chart-ma" style="height:230px"></canvas></div>'+
+    '<div style="background:var(--purple-l);border-radius:var(--rs);padding:10px 13px;margin-top:12px;font-size:12px;color:#5B21B6">💡 A media movel ignora variações naturais como retencao de agua e ciclos hormonais. Use-a como principal indicador de tendencia.</div></div>';
+}
+
+function pgHist(cfg,plan,S){
+  var rows=plan.filter(function(d){return d.real!=null;}).sort(function(a,b){return b.idx-a.idx;});
+  return '<div class="flex fjb fac fwrap gap8" style="margin-bottom:12px"><div></div>'+
+    '<div class="flex gap8"><button class="btn btn-o btn-sm" id="btn-exp">📁 CSV</button><button class="btn btn-o btn-sm" onclick="window.print()">🖨️ Imprimir</button></div></div>'+
+    '<div class="card" style="overflow-x:auto"><table class="dtable"><thead><tr><th>Data</th><th>Esperado</th><th>Registrado</th><th>Diferenca</th><th>Status</th><th></th></tr></thead><tbody>'+
+    (rows.length?rows.map(function(d){
+      var diff=+(d.real-d.expected).toFixed(2);
+      var iB=S.bestWK===d.key,iT=d.key===todayKey();
+      var sl,sc;
+      if(diff<=-0.3){sl='Excelente ✨';sc='#22C55E';}else if(diff<=0.05){sl='Na Meta 🎯';sc='#4F7FFA';}else if(diff<=0.3){sl='Atencao ⚠️';sc='#F59E0B';}else{sl='Acima 🔴';sc='#EF4444';}
+      return '<tr style="background:'+(iB?'#FFFBEB':'')+'">'+
+        '<td style="font-weight:500">'+fmtS(d.key)+(iB?' <span style="font-size:10px;color:#F59E0B;font-weight:700">RECORDE</span>':'')+(iT?' <span style="font-size:10px;color:#4F7FFA;font-weight:700">HOJE</span>':'')+'</td>'+
+        '<td>'+d.expected+' kg</td><td style="font-weight:600">'+d.real+' kg</td>'+
+        '<td style="color:'+(diff>0?'#EF4444':'#22C55E')+';font-weight:600">'+(diff>0?'+':'')+diff+' kg</td>'+
+        '<td style="color:'+sc+';font-weight:600;font-size:12px">'+sl+'</td>'+
+        '<td><button onclick="rmEntry(\''+d.key+'\')" style="background:none;border:none;cursor:pointer;color:var(--faint);font-size:18px;padding:0 4px;line-height:1">×</button></td></tr>';
+    }).join(''):'<tr><td colspan="6" style="text-align:center;color:var(--faint);padding:30px">Nenhum registro ainda.</td></tr>')+
+    '</tbody></table></div>';
+}
+
+function pgCal(cfg,plan,S){
+  var today=parseD(todayKey());
+  if(!calView)calView=[today.getFullYear(),today.getMonth()];
+  var cy=calView[0],cm=calView[1];
+  var dim=new Date(cy,cm+1,0).getDate(),fdow=new Date(cy,cm,1).getDay();
+  var mname=new Date(cy,cm,1).toLocaleString('pt-BR',{month:'long',year:'numeric'});
+  var DOW=['Dom','Seg','Ter','Qua','Qui','Sex','Sab'];
+  var cells='';
+  for(var i=0;i<fdow;i++)cells+='<div class="cal-day cal-empty"></div>';
+  for(var d=1;d<=dim;d++){
+    var k=cy+'-'+p2(cm+1)+'-'+p2(d);
+    var pd=plan.find(function(p){return p.key===k;});
+    var isFut=parseD(k)>today,isT=k===todayKey();
+    var real=cfg.entries[k];
+    var iB=S.bestWK===k&&real!=null;
+    var cls='cal-day ';
+    if(iB)cls+='cal-best';
+    else if(real!=null&&pd)cls+=real<=pd.expected+0.05?'cal-in':'cal-out';
+    else cls+='cal-future';
+    if(isT)cls+=' cal-today';
+    cells+='<div class="'+cls+'" title="'+(real?real+' kg':k)+'">'+(iB?'⭐':d)+'</div>';
+  }
+  return '<div class="card" style="max-width:500px">'+
+    '<div class="flex fjb fac" style="margin-bottom:14px">'+
+    '<button class="btn btn-o btn-sm" onclick="calNav(-1)">←</button>'+
+    '<strong style="font-size:14px;text-transform:capitalize">'+mname+'</strong>'+
+    '<button class="btn btn-o btn-sm" onclick="calNav(1)">→</button></div>'+
+    '<div class="cal-grid">'+DOW.map(function(d){return'<div class="cal-hd">'+d+'</div>';}).join('')+cells+'</div>'+
+    '<div class="flex gap10 mt14 fwrap" style="font-size:12px;color:var(--muted)"><span>🟢 Na meta</span><span>🔴 Acima</span><span>⭐ Melhor dia</span></div></div>';
+}
+
+function pgConq(cfg,plan,S){
+  return '<div style="display:flex;flex-direction:column;gap:9px">'+
+    S.achs.map(function(a){return'<div class="ach '+(a.ok?'on':'off')+'"><div class="ach-icon">'+a.e+'</div><div><div class="ach-title">'+a.t+'</div><div class="ach-desc">'+a.d+'</div></div>'+(a.ok?'<div style="margin-left:auto;font-size:11px;font-weight:700;color:var(--blue);white-space:nowrap">DESBLOQUEADA ✓</div>':'')+'</div>';}).join('')+'</div>';
+}
+
+function pgCfg(cfg,plan,S,tl,gpd,td){
+  var ek=Object.keys(cfg.entries).filter(function(k){return cfg.entries[k]!=null;}).length;
+  return '<div class="card" style="max-width:440px">'+
+    '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);margin-bottom:12px">Parametros da Jornada</div>'+
+    '<div class="g2" style="margin-bottom:12px">'+
+    '<div class="igroup"><label class="ilabel">Peso Inicial (kg)</label><input class="ifield" id="s-ini" type="number" step="0.1" value="'+cfg.initialWeight+'"></div>'+
+    '<div class="igroup"><label class="ilabel">Peso Meta (kg)</label><input class="ifield" id="s-goal" type="number" step="0.1" value="'+cfg.goalWeight+'"></div></div>'+
+    '<div class="g2" style="margin-bottom:16px">'+
+    '<div class="igroup"><label class="ilabel">Data Inicio</label><input class="ifield" id="s-start" type="date" value="'+cfg.startDate+'"></div>'+
+    '<div class="igroup"><label class="ilabel">Data Final</label><input class="ifield" id="s-end" type="date" value="'+cfg.endDate+'"></div></div>'+
+    '<button class="btn btn-p" id="btn-save" style="width:100%">Salvar Configuracoes</button></div>'+
+    '<div class="card mt16" style="max-width:440px">'+
+    '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);margin-bottom:12px">Dados</div>'+
+    '<div class="flex gap8 fwrap">'+
+    '<button class="btn btn-o btn-sm" id="btn-exp2">📁 Exportar CSV</button>'+
+    '<button class="btn btn-o btn-sm" onclick="window.print()">🖨️ Imprimir</button>'+
+    '<button class="btn btn-sm btn-danger" id="btn-clr">🗑️ Apagar Registros</button></div></div>'+
+    '<div class="card mt16" style="max-width:440px">'+
+    '<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--faint);margin-bottom:12px">Resumo</div>'+
+    '<div style="display:flex;flex-direction:column;gap:8px;font-size:13px">'+
+    '<div class="flex fjb"><span style="color:var(--muted)">Total a perder</span><strong>'+tl.toFixed(1)+' kg</strong></div>'+
+    '<div class="flex fjb"><span style="color:var(--muted)">Duracao total</span><strong>'+td+' dias</strong></div>'+
+    '<div class="flex fjb"><span style="color:var(--muted)">Ritmo diario</span><strong>'+Math.round(gpd)+' g/dia</strong></div>'+
+    '<div class="flex fjb"><span style="color:var(--muted)">Registros realizados</span><strong>'+ek+'</strong></div></div></div>';
+}
+
+// ── ATTACH ──
+function attach(cfg,plan,S,tl,gpd){
+  // register
+  var br=ge('btn-reg');
+  if(br){
+    var de=ge('reg-date'),we=ge('reg-w');
+    if(de)de.addEventListener('change',function(ev){inDate=ev.target.value;});
+    br.onclick=function(){
+      var d=de?de.value:inDate,v=parseFloat(we?we.value:'');
+      if(isNaN(v)||v<30||v>200){showToast('❌ Peso invalido');return;}
+      cfg.entries[d]=v;saveE(cfg.entries);if(we)we.value='';
+      showToast('✅ Peso registrado!');render();
+    };
+    if(we)we.addEventListener('keydown',function(ev){if(ev.key==='Enter')br.click();});
+  }
+  // export
+  ['btn-exp','btn-exp2'].forEach(function(id){var b=ge(id);if(b)b.onclick=exportCSV;});
+  // save settings
+  var bs=ge('btn-save');
+  if(bs)bs.onclick=function(){
+    var s={startDate:ge('s-start')?ge('s-start').value:cfg.startDate,endDate:ge('s-end')?ge('s-end').value:cfg.endDate,initialWeight:parseFloat(ge('s-ini')?ge('s-ini').value:cfg.initialWeight),goalWeight:parseFloat(ge('s-goal')?ge('s-goal').value:cfg.goalWeight)};
+    if(isNaN(s.initialWeight)||isNaN(s.goalWeight)){showToast('❌ Verifique os valores.');return;}
+    cfg.startDate=s.startDate;cfg.endDate=s.endDate;cfg.initialWeight=s.initialWeight;cfg.goalWeight=s.goalWeight;
+    saveCfg(s);showToast('✅ Configuracoes salvas!');render();
+  };
+  // clear
+  var bc=ge('btn-clr');
+  if(bc)bc.onclick=function(){if(!confirm('Apagar TODOS os registros?'))return;cfg.entries={};saveE({});showToast('🗑️ Apagado.');render();};
+}
+
+// ── CALENDAR NAV ──
+function calNav(dir){
+  if(!calView){var t=new Date();calView=[t.getFullYear(),t.getMonth()];}
+  calView[1]+=dir;
+  if(calView[1]<0){calView[1]=11;calView[0]--;}
+  if(calView[1]>11){calView[1]=0;calView[0]++;}
+  render();
+}
+
+// ── REMOVE ──
+function rmEntry(key){delete cfg.entries[key];saveE(cfg.entries);showToast('🗑️ Removido.');render();}
+
+// ── EXPORT ──
+function exportCSV(){
+  var R=buildPlan(cfg),plan=R.plan;
+  var rows=[['Data','Esperado (kg)','Registrado (kg)','Diferenca (kg)','Status']];
+  plan.filter(function(d){return d.real!=null;}).forEach(function(d){
+    var df=+(d.real-d.expected).toFixed(2);
+    var st=df<=-0.3?'Excelente':df<=0.05?'Meta':df<=0.3?'Atencao':'Acima';
+    rows.push([fmtS(d.key),d.expected,d.real,df,st]);
+  });
+  var csv=rows.map(function(r){return r.join(',');}).join('\n');
+  var blob=new Blob(['\uFEFF'+csv],{type:'text/csv;charset=utf-8'});
+  var url=URL.createObjectURL(blob);
+  var a=document.createElement('a');a.href=url;a.download='metadepeso.csv';a.click();
+  URL.revokeObjectURL(url);showToast('📁 CSV exportado!');
+}
+
+// ── EXPOSE GLOBALS ──
+window.goto=goto;window.calNav=calNav;window.rmEntry=rmEntry;window.openDrawer=openDrawer;window.closeDrawer=closeDrawer;
+
+
+// ── iOS Install Tip (shown in settings) ──
+function iosTip(){
+  var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+  var isStandalone = window.navigator.standalone === true;
+  if(!isIOS || isStandalone) return '';
+  return '<div style="background:linear-gradient(135deg,#EEF3FF,#EDE9FE);border-radius:12px;padding:16px 18px;margin-top:14px;border:1px solid #C7D9FF">'+
+    '<div style="font-size:13px;font-weight:700;color:#1D4ED8;margin-bottom:10px">📱 Como instalar no iPhone / iPad</div>'+
+    '<div style="font-size:12.5px;color:#374151;display:flex;flex-direction:column;gap:7px">'+
+    '<div>1️⃣  No Safari, toque em <strong>Compartilhar</strong> (ícone de caixa com seta ↑)</div>'+
+    '<div>2️⃣  Role para baixo e toque em <strong>"Adicionar à Tela de Início"</strong></div>'+
+    '<div>3️⃣  Toque em <strong>Adicionar</strong> — pronto! 🎉</div>'+
+    '<div style="margin-top:4px;font-size:11.5px;color:#6B7280">⚠️ Use sempre o Safari para que os dados sejam salvos corretamente.</div>'+
+    '</div></div>';
+}
+
+function androidTip(){
+  var isAndroid = /android/i.test(navigator.userAgent);
+  var isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+  if(!isAndroid || isStandalone) return '';
+  return '<div style="background:linear-gradient(135deg,#DCFCE7,#EEF3FF);border-radius:12px;padding:16px 18px;margin-top:14px;border:1px solid #C7D9FF">'+
+    '<div style="font-size:13px;font-weight:700;color:#15803D;margin-bottom:10px">📱 Como instalar no Android</div>'+
+    '<div style="font-size:12.5px;color:#374151;display:flex;flex-direction:column;gap:7px">'+
+    '<div>1️⃣  No Chrome, toque nos <strong>3 pontos</strong> (menu ⋮)</div>'+
+    '<div>2️⃣  Toque em <strong>"Adicionar à tela inicial"</strong> ou <strong>"Instalar app"</strong></div>'+
+    '<div>3️⃣  Toque em <strong>Adicionar</strong> — pronto! 🎉</div>'+
+    '<div style="margin-top:4px;font-size:11.5px;color:#6B7280">⚠️ Use sempre o Chrome para que os dados sejam mantidos.</div>'+
+    '</div></div>';
+}
+
+// ── BOOT ──
+render();
+</script>
+
+<!-- Install Banner -->
+<div id="install-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #E8EBF4;padding:14px 20px;z-index:1000;box-shadow:0 -4px 20px rgba(0,0,0,.10);align-items:center;gap:14px;flex-wrap:wrap">
+  <div style="flex:1;min-width:0">
+    <div style="font-size:14px;font-weight:700;color:#1A1D2E">📲 Instalar MetadePeso</div>
+    <div style="font-size:12px;color:#6B7280;margin-top:2px">Adicione à tela inicial e use como app — sem internet</div>
+  </div>
+  <div style="display:flex;gap:8px;flex-shrink:0">
+    <button onclick="installPWA()" style="background:#4F7FFA;color:#fff;border:none;padding:9px 18px;border-radius:10px;font-size:13.5px;font-weight:700;cursor:pointer;font-family:inherit">Instalar</button>
+    <button onclick="hideInstallBanner()" style="background:#F7F8FC;color:#6B7280;border:1.5px solid #E8EBF4;padding:9px 14px;border-radius:10px;font-size:13.5px;cursor:pointer;font-family:inherit">Agora não</button>
+  </div>
+</div>
+
+<script>
+// ── PWA: Inject manifest dynamically (no external files needed) ──
+(function(){
+  var manifest = {
+    name: "MetadePeso — Sua Jornada",
+    short_name: "MetadePeso",
+    description: "Acompanhe sua meta de peso com estilo",
+    start_url: "./",
+    display: "standalone",
+    background_color: "#F7F8FC",
+    theme_color: "#4F7FFA",
+    orientation: "portrait-primary",
+    categories: ["health","fitness"],
+    icons: [
+      {
+        src: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%234F7FFA'/%3E%3Ctext x='256' y='320' font-size='280' text-anchor='middle' fill='white'%3E🌸%3C/text%3E%3C/svg%3E",
+        sizes: "512x512",
+        type: "image/svg+xml",
+        purpose: "any maskable"
+      }
+    ]
+  };
+  var blob = new Blob([JSON.stringify(manifest)], {type:'application/json'});
+  var url  = URL.createObjectURL(blob);
+  document.getElementById('pwa-manifest').setAttribute('href', url);
+})();
+
+// ── PWA: Register Service Worker (inline via blob) ──
+(function(){
+  if(!('serviceWorker' in navigator)) return;
+  var swCode = `
+const CACHE = 'metadepeso-v1';
+const ASSETS = [self.location.href];
+self.addEventListener('install', function(e){
+  e.waitUntil(caches.open(CACHE).then(function(c){ return c.addAll(ASSETS); }));
+  self.skipWaiting();
+});
+self.addEventListener('activate', function(e){
+  e.waitUntil(caches.keys().then(function(keys){
+    return Promise.all(keys.filter(function(k){return k!==CACHE;}).map(function(k){return caches.delete(k);}));
+  }));
+  self.clients.claim();
+});
+self.addEventListener('fetch', function(e){
+  e.respondWith(caches.match(e.request).then(function(r){ return r || fetch(e.request); }));
+});
+  `;
+  var blob = new Blob([swCode], {type:'application/javascript'});
+  var swUrl = URL.createObjectURL(blob);
+  navigator.serviceWorker.register(swUrl, {scope: './'})
+    .then(function(){ console.log('[MetadePeso] SW registrado'); })
+    .catch(function(e){ console.log('[MetadePeso] SW falhou (normal em file://):', e.message); });
+})();
+
+// ── PWA: Install prompt ──
+var deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', function(e){
+  e.preventDefault();
+  deferredPrompt = e;
+  showInstallBanner();
+});
+window.addEventListener('appinstalled', function(){
+  hideInstallBanner();
+  showToast('🎉 MetadePeso instalado com sucesso!');
+  deferredPrompt = null;
+});
+
+function showInstallBanner(){
+  var b = document.getElementById('install-banner');
+  if(b) b.style.display = 'flex';
+}
+function hideInstallBanner(){
+  var b = document.getElementById('install-banner');
+  if(b) b.style.display = 'none';
+}
+function installPWA(){
+  if(!deferredPrompt){ showToast('Use o menu do navegador para instalar.'); return; }
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(function(r){
+    if(r.outcome==='accepted') showToast('✅ Instalando MetadePeso...');
+    deferredPrompt = null;
+    hideInstallBanner();
+  });
+}
+window.installPWA = installPWA;
+window.hideInstallBanner = hideInstallBanner;
+</script>
+</body>
+</html>
