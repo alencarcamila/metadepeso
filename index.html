@@ -6,15 +6,15 @@
   <meta name="theme-color" content="#4F7FFA"/>
   <meta name="apple-mobile-web-app-capable" content="yes"/>
   <meta name="apple-mobile-web-app-status-bar-style" content="default"/>
-  <meta name="apple-mobile-web-app-title" content="MetadePeso"/>
+  <meta name="apple-mobile-web-app-title" content="Meta de Peso"/>
   <meta name="mobile-web-app-capable" content="yes"/>
-  <meta name="application-name" content="MetadePeso"/>
+  <meta name="application-name" content="Meta de Peso"/>
   <link rel="manifest" id="pwa-manifest"/>
   <!-- Apple touch icon inline SVG workaround via data URI -->
   <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 512 512'%3E%3Crect width='512' height='512' rx='100' fill='%234F7FFA'/%3E%3Ctext x='256' y='320' font-size='280' text-anchor='middle' fill='white'%3E🌸%3C/text%3E%3C/svg%3E"/>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>MetadePeso 🌸</title>
+<title>Meta de Peso 🌸</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -122,7 +122,7 @@ canvas{display:block;width:100%!important}
 <body>
 <div class="app">
   <aside class="sidebar" id="sidebar">
-    <div class="logo">🌸 MetadePeso</div>
+    <div class="logo">🌸 Meta de Peso</div>
     <div id="nav-d"></div>
     <div style="margin-top:auto;padding-top:18px">
       <div class="sp-label" id="sb-info">Carregando…</div>
@@ -131,7 +131,7 @@ canvas{display:block;width:100%!important}
   </aside>
   <div style="flex:1;display:flex;flex-direction:column;min-width:0">
     <div class="mob-bar">
-      <div class="logo" style="margin-bottom:0">🌸 MetadePeso</div>
+      <div class="logo" style="margin-bottom:0">🌸 Meta de Peso</div>
       <div class="ham" onclick="openDrawer()"><span></span><span></span><span></span></div>
     </div>
     <main class="main"><div id="page"></div></main>
@@ -139,7 +139,7 @@ canvas{display:block;width:100%!important}
 </div>
 <div class="drawer-bg" id="drw-bg" onclick="closeDrawer()">
   <div class="drawer" onclick="event.stopPropagation()">
-    <div class="logo">🌸 MetadePeso</div>
+    <div class="logo">🌸 Meta de Peso</div>
     <div id="nav-m"></div>
   </div>
 </div>
@@ -229,7 +229,17 @@ function stats(cfg,plan,totalLoss){
   // projection
   var wr=plan.filter(function(d){return d.real!=null;}).sort(function(a,b){return a.idx-b.idx;});
   var proj=null;
-  if(wr.length>=2){var f=wr[0],l=wr[wr.length-1];var rate=(f.real-l.real)/(l.idx-f.idx||1);proj=+(l.real-rate*((plan.length-1)-l.idx)).toFixed(1);}
+  if(wr.length>=2){
+    // Usa no maximo os ultimos 14 registros para capturar tendencia recente
+    var recent=wr.slice(-Math.min(14,wr.length));
+    var pf=recent[0],pl=recent[recent.length-1];
+    var span=pl.idx-pf.idx||1;
+    var rate=(pf.real-pl.real)/span; // kg/dia perdido (positivo = emagrecendo)
+    var remaining=(plan.length-1)-pl.idx;
+    var rawProj=pl.real-rate*remaining;
+    // Limita entre valores razoaveis para evitar projecoes absurdas
+    proj=+Math.max(cfg.goalWeight-3,Math.min(cfg.initialWeight+3,rawProj)).toFixed(1);
+  }
   // best week
   var bw=null,bl=0;
   for(var i=6;i<plan.length;i++){var sl=plan.slice(i-6,i+1).filter(function(d){return d.real!=null;});if(sl.length>=2){var ls=sl[0].real-sl[sl.length-1].real;if(ls>bl){bl=ls;bw={start:sl[0].key,end:sl[sl.length-1].key,loss:+ls.toFixed(2)};}}}
@@ -605,7 +615,7 @@ render();
 <!-- Install Banner -->
 <div id="install-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #E8EBF4;padding:14px 20px;z-index:1000;box-shadow:0 -4px 20px rgba(0,0,0,.10);align-items:center;gap:14px;flex-wrap:wrap">
   <div style="flex:1;min-width:0">
-    <div style="font-size:14px;font-weight:700;color:#1A1D2E">📲 Instalar MetadePeso</div>
+    <div style="font-size:14px;font-weight:700;color:#1A1D2E">📲 Instalar Meta de Peso</div>
     <div style="font-size:12px;color:#6B7280;margin-top:2px">Adicione à tela inicial e use como app — sem internet</div>
   </div>
   <div style="display:flex;gap:8px;flex-shrink:0">
@@ -618,8 +628,8 @@ render();
 // ── PWA: Inject manifest dynamically (no external files needed) ──
 (function(){
   var manifest = {
-    name: "MetadePeso — Sua Jornada",
-    short_name: "MetadePeso",
+    name: "Meta de Peso — Sua Jornada",
+    short_name: "Meta de Peso",
     description: "Acompanhe sua meta de peso com estilo",
     start_url: "./",
     display: "standalone",
@@ -664,8 +674,8 @@ self.addEventListener('fetch', function(e){
   var blob = new Blob([swCode], {type:'application/javascript'});
   var swUrl = URL.createObjectURL(blob);
   navigator.serviceWorker.register(swUrl, {scope: './'})
-    .then(function(){ console.log('[MetadePeso] SW registrado'); })
-    .catch(function(e){ console.log('[MetadePeso] SW falhou (normal em file://):', e.message); });
+    .then(function(){ console.log('[Meta de Peso] SW registrado'); })
+    .catch(function(e){ console.log('[Meta de Peso] SW falhou (normal em file://):', e.message); });
 })();
 
 // ── PWA: Install prompt ──
@@ -677,7 +687,7 @@ window.addEventListener('beforeinstallprompt', function(e){
 });
 window.addEventListener('appinstalled', function(){
   hideInstallBanner();
-  showToast('🎉 MetadePeso instalado com sucesso!');
+  showToast('🎉 Meta de Peso instalado com sucesso!');
   deferredPrompt = null;
 });
 
@@ -693,7 +703,7 @@ function installPWA(){
   if(!deferredPrompt){ showToast('Use o menu do navegador para instalar.'); return; }
   deferredPrompt.prompt();
   deferredPrompt.userChoice.then(function(r){
-    if(r.outcome==='accepted') showToast('✅ Instalando MetadePeso...');
+    if(r.outcome==='accepted') showToast('✅ Instalando Meta de Peso...');
     deferredPrompt = null;
     hideInstallBanner();
   });
